@@ -1,5 +1,6 @@
 import type { HotelOption, MissionConstraints, TransportMode, TransportOption } from "@/lib/mission/schema";
 import type { MissionSearchProvider, MissionSearchResult, SearchDirectionResult } from "@/lib/mission/ports";
+import { cityTimeZone, isoInTimeZone } from "@/lib/mission/timezone";
 import { TutuMcpClient } from "./client";
 import { integerEnv } from "@/lib/runtime-config";
 
@@ -249,8 +250,22 @@ export class TutuProvider implements MissionSearchProvider {
     result.outbound.options = [...new Map(result.outbound.options.map((option) => [option.id, option])).values()];
     result.returns.options = [...new Map(result.returns.options.map((option) => [option.id, option])).values()];
     const nowMs = now.getTime();
-    result.outbound.options = result.outbound.options.filter((option) => new Date(option.departureAt).getTime() >= nowMs);
-    result.returns.options = result.returns.options.filter((option) => new Date(option.departureAt).getTime() >= nowMs);
+    const originZone = cityTimeZone(constraints.origin);
+    const destinationZone = cityTimeZone(constraints.destination);
+    result.outbound.options = result.outbound.options
+      .filter((option) => new Date(option.departureAt).getTime() >= nowMs)
+      .map((option) => ({
+        ...option,
+        departureAt: isoInTimeZone(option.departureAt, originZone),
+        arrivalAt: isoInTimeZone(option.arrivalAt, destinationZone),
+      }));
+    result.returns.options = result.returns.options
+      .filter((option) => new Date(option.departureAt).getTime() >= nowMs)
+      .map((option) => ({
+        ...option,
+        departureAt: isoInTimeZone(option.departureAt, destinationZone),
+        arrivalAt: isoInTimeZone(option.arrivalAt, originZone),
+      }));
     let hotelResult: HotelResponse | null = null;
     if (constraints.accommodation) {
       const settledHotel = await hotelSearch;

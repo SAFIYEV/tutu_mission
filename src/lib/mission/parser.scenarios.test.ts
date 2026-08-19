@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { parseMissionDeterministically } from "./parser";
+import { groundMissionTimezones, isoInTimeZone } from "./timezone";
 
 const now = new Date("2026-08-08T08:00:00Z");
 
@@ -59,6 +60,23 @@ describe("Russian mission prompt corpus", () => {
     const winter = parseMissionDeterministically("Завтра к 18:00 мне нужно быть в Париже. Я нахожусь в Москве.", new Date("2026-12-10T08:00:00Z"));
     expect(summer.eventAt.endsWith("+02:00")).toBe(true);
     expect(winter.eventAt.endsWith("+01:00")).toBe(true);
+  });
+
+  it("normalizes MCP instants to the route city timezone instead of the caller timezone", () => {
+    expect(isoInTimeZone("2026-08-20T12:00:00+04:00", "Europe/Moscow"))
+      .toBe("2026-08-20T11:00:00+03:00");
+  });
+
+  it("grounds a Claude deadline in the destination city timezone", () => {
+    const parsed = parseMissionDeterministically(
+      "Завтра к 18:00 мне нужно быть в Санкт-Петербурге. Я нахожусь в Москве.",
+      now,
+    );
+    const incorrectlyOffset = { ...parsed, eventAt: "2026-08-09T18:00:00+04:00", latestArrivalAt: "2026-08-09T18:00:00+04:00" };
+    const emptyDirection = { options: [], unavailableModes: [], warnings: [], attempts: 0, successfulSearches: 0 };
+    const grounded = groundMissionTimezones(incorrectlyOffset, { outbound: emptyDirection, returns: emptyDirection });
+    expect(grounded.eventAt).toBe("2026-08-09T18:00:00+03:00");
+    expect(grounded.timezone).toBe("Europe/Moscow");
   });
 
   it("counts a relative return from the stated trip date", () => {

@@ -1,4 +1,5 @@
 import { missionConstraintsSchema, type MissionConstraints, type TransportMode } from "./schema";
+import { cityTimeZone, offsetForDate } from "./timezone";
 
 const ALL_MODES: TransportMode[] = ["avia", "railway", "bus", "etrain"];
 const CITY = "([А-ЯЁA-Z][А-Яа-яЁёA-Za-z-]+(?:[ -][А-ЯЁA-Z][А-Яа-яЁёA-Za-z-]+){0,2})";
@@ -33,41 +34,7 @@ function datePartsInZone(now: Date, timeZone: string) {
 }
 
 function cityClock(city: string) {
-  const normalized = city.toLowerCase();
-  const zones: Record<string, string> = {
-    баку: "Asia/Baku", baku: "Asia/Baku",
-    тбилиси: "Asia/Tbilisi", ереван: "Asia/Yerevan",
-    стамбул: "Europe/Istanbul", дубай: "Asia/Dubai",
-    алматы: "Asia/Almaty", астана: "Asia/Almaty",
-    бишкек: "Asia/Bishkek", ташкент: "Asia/Tashkent",
-    минск: "Europe/Minsk", калининград: "Europe/Kaliningrad",
-    самара: "Europe/Samara", екатеринбург: "Asia/Yekaterinburg",
-    омск: "Asia/Omsk", новосибирск: "Asia/Novosibirsk",
-    красноярск: "Asia/Krasnoyarsk", иркутск: "Asia/Irkutsk",
-    якутск: "Asia/Yakutsk", владивосток: "Asia/Vladivostok",
-    магадан: "Asia/Magadan", петропавловсккамчатский: "Asia/Kamchatka",
-    лондон: "Europe/London", париж: "Europe/Paris", берлин: "Europe/Berlin",
-  };
-  return { zone: zones[normalized.replace(/[ -]/g, "")] ?? zones[normalized] ?? "Europe/Moscow" };
-}
-
-function offsetForDate(timeZone: string, date: string) {
-  const instant = new Date(`${date}T12:00:00Z`);
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23",
-  }).formatToParts(instant);
-  const get = (type: string) => Number(parts.find((part) => part.type === type)?.value ?? 0);
-  const localAsUtc = Date.UTC(get("year"), get("month") - 1, get("day"), get("hour"), get("minute"));
-  const minutes = Math.round((localAsUtc - instant.getTime()) / 60_000);
-  const sign = minutes >= 0 ? "+" : "-";
-  const absolute = Math.abs(minutes);
-  return `${sign}${String(Math.floor(absolute / 60)).padStart(2, "0")}:${String(absolute % 60).padStart(2, "0")}`;
+  return { zone: cityTimeZone(city) };
 }
 
 function addDays(date: string, days: number) {
