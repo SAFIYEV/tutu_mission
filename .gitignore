@@ -23,6 +23,17 @@
 # misc
 .DS_Store
 *.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+
+# local cloud credentials and CLI state
+.aws/
+aws_credentials*
+credentials.json
+service-account*.json
 
 # debug
 npm-debug.log*
@@ -33,6 +44,9 @@ yarn-error.log*
 # env files; the documented template is intentionally versioned
 .env*
 !.env.example
+*.local
+secrets.*
+!secrets.example.*
 
 # vercel
 .vercel

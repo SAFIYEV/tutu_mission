@@ -2,6 +2,8 @@
 
 Приложение содержит серверный `/api/mission`, поэтому разворачивается как **Next.js Node Web Service**. GitHub Pages поддерживает только статическую публикацию и для этого проекта не подходит.
 
+Важно: исходный код route handler может находиться в публичном репозитории — безопасность обеспечивается тем, что ключи существуют только в server-side environment Render. `.env*`, AWS credentials, сертификаты и key-файлы исключены через `.gitignore`; в Git хранится только пустой `.env.example`.
+
 ## Blueprint
 
 Корневой `render.yaml` задаёт Node.js runtime, Frankfurt region, production build, `npm run start`, health check `/` и автодеплой после успешного GitHub quality gate.
