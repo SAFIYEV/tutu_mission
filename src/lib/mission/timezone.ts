@@ -63,7 +63,8 @@ function shiftKeepingOffset(iso: string, minutes: number) {
 }
 
 /** Grounds wall-clock deadlines in city IANA zones, never in the caller/MCP offset. */
-export function groundMissionTimezones(constraints: MissionConstraints, _search: MissionSearchResult): MissionConstraints {
+export function groundMissionTimezones(constraints: MissionConstraints, search: MissionSearchResult): MissionConstraints {
+  void search;
   const destinationZone = cityTimeZone(constraints.destination);
   const originZone = cityTimeZone(constraints.origin);
   const destinationOffset = offsetForDate(destinationZone, constraints.eventAt.slice(0, 10));
