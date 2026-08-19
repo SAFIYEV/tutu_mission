@@ -139,7 +139,7 @@ AWS_BEARER_TOKEN_BEDROCK=your-secret
 ## Проверка качества
 
 ```bash
-npm run check              # typecheck + lint + 70 тестов + production build
+npm run check              # type generation + typecheck + lint + 70 тестов + build
 npm run test:bedrock-live  # реальный вызов Bedrock, требует AWS-доступ
 npm run test:api-live      # smoke-тест запущенного API
 ```

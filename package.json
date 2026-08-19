@@ -10,7 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "test:bedrock-live": "cross-env LIVE_BEDROCK_TEST=1 vitest run src/lib/ai/bedrock.live.test.ts",
     "test:api-live": "node scripts/smoke-api.mjs",
