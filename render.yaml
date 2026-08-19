@@ -7,11 +7,11 @@ services:
     branch: main
     buildCommand: npm ci && npm run build
     startCommand: npm run start
-    healthCheckPath: /
+    healthCheckPath: /api/health
     autoDeployTrigger: checksPass
     envVars:
       - key: NODE_VERSION
-        value: 20.19.0
+        value: 22.18.0
       - key: TUTU_MCP_URL
         value: https://mcp.tutu.ru/mcp
       - key: AWS_REGION

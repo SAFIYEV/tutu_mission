@@ -6,7 +6,7 @@
 
 ## Blueprint
 
-Корневой `render.yaml` задаёт Node.js runtime, Frankfurt region, production build, `npm run start`, health check `/` и автодеплой после успешного GitHub quality gate.
+Корневой `render.yaml` задаёт Node.js 22 runtime, Frankfurt region, production build, `npm run start`, health check `/api/health` и автодеплой после успешного GitHub quality gate.
 
 ## Первый деплой
 

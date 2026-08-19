@@ -100,7 +100,7 @@ src/
 
 ## Запуск
 
-Требования: Node.js `20.9+`, npm, доступ к Tutu MCP. Для AI-разбора — AWS Bedrock с Claude Sonnet 4.6.
+Требования: Node.js `22.18+`, npm, доступ к Tutu MCP. Для AI-разбора — AWS Bedrock с Claude Sonnet 4.6.
 
 ```bash
 git clone https://github.com/SAFIYEV/tutu_mission.git
