@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: tutu-mission
+    runtime: node
+    plan: free
+    region: frankfurt
+    branch: main
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    healthCheckPath: /
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: NODE_VERSION
+        value: 20.19.0
+      - key: TUTU_MCP_URL
+        value: https://mcp.tutu.ru/mcp
+      - key: AWS_REGION
+        value: us-east-1
+      - key: AWS_BEDROCK_MODEL_ID
+        value: global.anthropic.claude-sonnet-4-6
+      - key: AWS_BEDROCK_ENABLED
+        value: "true"
+      - key: AWS_BEARER_TOKEN_BEDROCK
+        sync: false
