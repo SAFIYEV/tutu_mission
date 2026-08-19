@@ -33,7 +33,16 @@ export async function parseMission(text: string, now = new Date()) {
 
   try {
     const extraction = await extractMissionWithClaude(text, fallback, now);
-    if (extraction.status === "clarification") throw new MissionClarificationError(extraction.questions);
+    if (extraction.status === "clarification") {
+      if (fallback && canResolveReturnMorningDeterministically(text, extraction.questions)) {
+        return {
+          constraints: await applyBudgetConversion(text, fallback),
+          source: "deterministic-fallback" as const,
+          warning: "Уточнение модели о фразе «следующим утром» разрешено детерминированным правилом: следующий календарный день до 12:00",
+        };
+      }
+      throw new MissionClarificationError(extraction.questions);
+    }
     if (extraction.status === "unsupported") throw new MissionUnsupportedError(extraction.details);
 
     const constraints = extraction.constraints;
@@ -70,6 +79,14 @@ export async function parseMission(text: string, now = new Date()) {
     if (fallbackError) throw fallbackError;
     throw error;
   }
+}
+
+function canResolveReturnMorningDeterministically(text: string, questions: string[]) {
+  const explicitlyNextMorning = /следующ\w*\s+утр/i.test(text);
+  const onlyReturnTimingQuestions = questions.length > 0 && questions.every((question) =>
+    /(?:вернут|обратно|возврат)/i.test(question) && /(?:врем|когда|утр|час)/i.test(question),
+  );
+  return explicitlyNextMorning && onlyReturnTimingQuestions;
 }
 
 function bedrockFallbackReason(error: unknown) {
