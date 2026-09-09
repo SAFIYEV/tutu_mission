@@ -7,7 +7,7 @@ Wants=network-online.target
 Type=simple
 User=ubuntu
 Group=ubuntu
-WorkingDirectory=/opt/tutu-mission
+WorkingDirectory=/opt/tutu-mission/app
 RuntimeDirectory=tutu-mission-telegram
 RuntimeDirectoryMode=0750
 Environment=AWS_REGION=eu-central-1
