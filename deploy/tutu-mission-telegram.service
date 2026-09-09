@@ -1,0 +1,25 @@
+[Unit]
+Description=Tutu Mission Telegram greeting bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/opt/tutu-mission
+RuntimeDirectory=tutu-mission-telegram
+RuntimeDirectoryMode=0750
+ExecStartPre=+/bin/sh -c 'set -eu; umask 077; token="$(/usr/bin/aws --region eu-central-1 ssm get-parameter --name /tutu-mission/telegram-bot-token --with-decryption --query Parameter.Value --output text)"; printf "TELEGRAM_BOT_TOKEN=%s\\nTELEGRAM_MINI_APP_URL=https://mission.matrixon.org\\n" "$token" > /run/tutu-mission-telegram/env; chown ubuntu:ubuntu /run/tutu-mission-telegram/env; chmod 600 /run/tutu-mission-telegram/env'
+EnvironmentFile=/run/tutu-mission-telegram/env
+ExecStart=/usr/bin/node scripts/telegram-bot.mjs
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/run/tutu-mission-telegram
+
+[Install]
+WantedBy=multi-user.target
