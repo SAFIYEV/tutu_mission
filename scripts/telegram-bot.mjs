@@ -1,5 +1,5 @@
 /**
- * Minimal Telegram entrypoint for Tutu Mission.
+ * Minimal Telegram entrypoint for tmission.
  *
  * It keeps polling isolated from Next.js and fetches its production token from
  * encrypted AWS Parameter Store through the EC2 instance role.
@@ -58,7 +58,7 @@ async function telegram(method, payload = {}) {
 function welcomeKeyboard() {
   return {
     inline_keyboard: [[{
-      text: "Открыть Tutu Mission",
+      text: "Открыть tmission",
       web_app: { url: miniAppUrl },
     }]],
   };
@@ -68,7 +68,7 @@ async function welcome(chatId, firstName) {
   const name = typeof firstName === "string" && firstName.trim() ? `, ${firstName.trim()}` : "";
   await telegram("sendMessage", {
     chat_id: chatId,
-    text: `Привет${name}! 👋\n\nЯ помогу решить travel-задачу: сформулируйте цель поездки, а Tutu Mission найдёт и проверит выполнимый маршрут.`,
+    text: `Привет${name}! 👋\n\nЯ помогу решить travel-задачу: сформулируйте цель поездки, а tmission найдёт и проверит выполнимый маршрут.`,
     reply_markup: welcomeKeyboard(),
   });
 }
@@ -89,7 +89,7 @@ async function initialize() {
   }
 
   await telegram("setMyCommands", {
-    commands: [{ command: "start", description: "Открыть Tutu Mission" }],
+    commands: [{ command: "start", description: "Открыть tmission" }],
   });
 }
 
@@ -126,5 +126,5 @@ for (const signal of ["SIGINT", "SIGTERM"]) {
 }
 
 await initialize();
-console.log("Tutu Mission Telegram bot is running.");
+console.log("tmission Telegram bot is running.");
 await pollForever();

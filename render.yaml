@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: tutu-mission
+    name: tmission
     runtime: node
     plan: free
     region: frankfurt

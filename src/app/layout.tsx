@@ -8,8 +8,8 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "tutu mission — поставьте задачу, получите маршрут",
-  description: "tutu mission понимает задачу поездки, находит актуальные варианты и программно подтверждает выполнимость маршрута.",
+  title: "tmission — поставьте задачу, получите маршрут",
+  description: "tmission понимает задачу поездки, находит актуальные варианты и программно подтверждает выполнимость маршрута.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

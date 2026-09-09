@@ -1,5 +1,5 @@
 [Unit]
-Description=Tutu Mission Telegram greeting bot
+Description=tmission Telegram greeting bot
 After=network-online.target
 Wants=network-online.target
 
@@ -7,11 +7,11 @@ Wants=network-online.target
 Type=simple
 User=ubuntu
 Group=ubuntu
-WorkingDirectory=/opt/tutu-mission/app
-RuntimeDirectory=tutu-mission-telegram
+WorkingDirectory=/opt/tmission/app
+RuntimeDirectory=tmission-telegram
 RuntimeDirectoryMode=0750
 Environment=AWS_REGION=eu-central-1
-Environment=TELEGRAM_BOT_TOKEN_SSM_PARAMETER=/tutu-mission/telegram-bot-token
+Environment=TELEGRAM_BOT_TOKEN_SSM_PARAMETER=/tmission/telegram-bot-token
 Environment=TELEGRAM_MINI_APP_URL=https://mission.matrixon.org
 ExecStart=/usr/bin/node scripts/telegram-bot.mjs
 Restart=always

@@ -147,7 +147,7 @@ export async function extractMissionWithClaude(
           structure: {
             jsonSchema: {
               name: "mission_constraints",
-              description: "Validated constraints for the deterministic Tutu Mission solver",
+              description: "Validated constraints for the deterministic tmission solver",
               schema: JSON.stringify(missionOutputSchema),
             },
           },

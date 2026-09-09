@@ -1,8 +1,7 @@
 export function Brand() {
   return (
-    <div className="brand" aria-label="tutu mission">
-      <span className="brand-word">tutu</span>
-      <span className="brand-product">mission</span>
+    <div className="brand" aria-label="tmission">
+      <span className="brand-word">tmission</span>
     </div>
   );
 }
