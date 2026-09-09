@@ -1,21 +1,39 @@
 /**
  * Minimal Telegram entrypoint for Tutu Mission.
  *
- * It intentionally uses the built-in Node.js fetch API, so the bot does not
- * add a runtime dependency or share a process with the Next.js application.
- * Keep TELEGRAM_BOT_TOKEN in the service environment, never in this file.
+ * It keeps polling isolated from Next.js and fetches its production token from
+ * encrypted AWS Parameter Store through the EC2 instance role.
  */
 
-const token = process.env.TELEGRAM_BOT_TOKEN;
-const miniAppUrl = process.env.TELEGRAM_MINI_APP_URL ?? "https://mission.matrixon.org";
+import { GetParameterCommand, SSMClient } from "@aws-sdk/client-ssm";
 
-if (!token) {
-  throw new Error("TELEGRAM_BOT_TOKEN is required to start the Telegram bot.");
-}
+const miniAppUrl = process.env.TELEGRAM_MINI_APP_URL ?? "https://mission.matrixon.org";
 
 if (!URL.canParse(miniAppUrl) || !miniAppUrl.startsWith("https://")) {
   throw new Error("TELEGRAM_MINI_APP_URL must be an HTTPS URL.");
 }
+
+async function resolveToken() {
+  const directToken = process.env.TELEGRAM_BOT_TOKEN?.trim();
+  if (directToken) return directToken;
+
+  const parameterName = process.env.TELEGRAM_BOT_TOKEN_SSM_PARAMETER?.trim();
+  if (!parameterName) {
+    throw new Error("Set TELEGRAM_BOT_TOKEN or TELEGRAM_BOT_TOKEN_SSM_PARAMETER.");
+  }
+
+  const client = new SSMClient({ region: process.env.AWS_REGION ?? "eu-central-1" });
+  const response = await client.send(new GetParameterCommand({ Name: parameterName, WithDecryption: true }));
+  const parameterToken = response.Parameter?.Value?.trim();
+
+  if (!parameterToken) {
+    throw new Error("Telegram bot token parameter is empty.");
+  }
+
+  return parameterToken;
+}
+
+const token = await resolveToken();
 
 const apiBase = `https://api.telegram.org/bot${token}`;
 let nextOffset = 0;
