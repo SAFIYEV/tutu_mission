@@ -101,6 +101,10 @@ export function isBedrockConfigured() {
       process.env.AWS_WEB_IDENTITY_TOKEN_FILE ||
       process.env.AWS_CONTAINER_CREDENTIALS_RELATIVE_URI ||
       process.env.AWS_CONTAINER_CREDENTIALS_FULL_URI ||
+      // EC2 instance profiles use IMDS rather than the container credential
+      // variables above. Self-hosted deployments set this endpoint explicitly
+      // so the SDK credential chain is enabled without putting a secret on disk.
+      process.env.AWS_EC2_METADATA_SERVICE_ENDPOINT ||
       hasAwsLogin ||
       hasSharedCredentials,
   );
